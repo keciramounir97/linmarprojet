@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Sonatrach Power BI Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      /* Make the iframe fill the entire viewport */
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        overflow: hidden;
+      }
+      iframe {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+      }
+      .login-container {
+        background: linear-gradient(135deg, #1e3a8a 0%, #0ea5e9 100%);
+      }
+      .input-field {
+        transition: all 0.3s ease;
+      }
+      .input-field:focus {
+        box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.3);
+      }
+      .shake {
+        animation: shake 0.5s;
+      }
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20%,
+        60% {
+          transform: translateX(-5px);
+        }
+        40%,
+        80% {
+          transform: translateX(5px);
+        }
+      }
+      .logo {
+        filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      id="loginPage"
+      class="min-h-screen flex items-center justify-center login-container"
+    >
+      <div
+        class="w-full max-w-md px-8 py-12 bg-white/90 backdrop-blur-sm rounded-xl shadow-2xl"
+      >
+        <div class="text-center mb-10">
+          <div class="flex justify-center mb-6">
+            <div class="logo bg-blue-600 p-4 rounded-full">
+              <i class="fas fa-chart-line text-white text-4xl"></i>
+            </div>
+          </div>
+          <h1 class="text-3xl font-bold text-gray-800 mb-2">
+            Sonatrach Analytics
+          </h1>
+          <p class="text-gray-600">Enterprise Power BI Dashboard</p>
+        </div>
+
+        <form id="loginForm" class="space-y-6">
+          <div>
+            <label
+              for="email"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Company Email</label
+            >
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+              >
+                <i class="fas fa-envelope text-gray-400"></i>
+              </div>
+              <input
+                type="email"
+                id="email"
+                class="input-field w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="admin@sonatrach.dz"
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label
+              for="password"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Password</label
+            >
+            <div class="relative">
+              <div
+                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+              >
+                <i class="fas fa-lock text-gray-400"></i>
+              </div>
+              <input
+                type="password"
+                id="password"
+                class="input-field w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="••••••••"
+                required
+              />
+              <button
+                type="button"
+                id="togglePassword"
+                class="absolute right-3 top-3 text-gray-400 hover:text-blue-500"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-between">
+            <div class="flex items-center">
+              <input
+                id="remember"
+                type="checkbox"
+                class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+              />
+              <label for="remember" class="ml-2 block text-sm text-gray-700"
+                >Remember me</label
+              >
+            </div>
+            <a href="#" class="text-sm text-blue-600 hover:text-blue-800"
+              >Forgot password?</a
+            >
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+            >
+              <span id="loginText">Sign in</span>
+              <span id="loginSpinner" class="hidden ml-2">
+                <i class="fas fa-spinner fa-spin"></i>
+              </span>
+            </button>
+          </div>
+
+          <div
+            id="errorMessage"
+            class="hidden text-center py-2 px-4 bg-red-100 border border-red-400 text-red-700 rounded"
+          ></div>
+        </form>
+
+        <div class="mt-8 text-center text-sm text-gray-500">
+          <p>© 2023 Sonatrach. All rights reserved.</p>
+        </div>
+      </div>
+    </div>
+
+    <div id="dashboardPage" class="hidden">
+      <iframe
+        title="Dashboard Power BI data Fixe"
+        src="https://app.powerbi.com/reportEmbed?reportId=e8093ec7-6158-412c-93a7-d458bec31a96&autoAuth=true&embeddedDemo=true"
+        allowfullscreen="true"
+      ></iframe>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Password visibility toggle
+        const togglePassword = document.getElementById("togglePassword");
+        const passwordInput = document.getElementById("password");
+
+        togglePassword.addEventListener("click", function () {
+          const type =
+            passwordInput.getAttribute("type") === "password"
+              ? "text"
+              : "password";
+          passwordInput.setAttribute("type", type);
+          this.innerHTML =
+            type === "password"
+              ? '<i class="fas fa-eye"></i>'
+              : '<i class="fas fa-eye-slash"></i>';
+        });
+
+        // Form submission
+        const loginForm = document.getElementById("loginForm");
+        const loginPage = document.getElementById("loginPage");
+        const dashboardPage = document.getElementById("dashboardPage");
+        const errorMessage = document.getElementById("errorMessage");
+        const loginText = document.getElementById("loginText");
+        const loginSpinner = document.getElementById("loginSpinner");
+
+        loginForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          // Show loading state
+          loginText.textContent = "Authenticating...";
+          loginSpinner.classList.remove("hidden");
+
+          // Simulate API call with timeout
+          setTimeout(function () {
+            // Check credentials
+            if (
+              email === "admin@sonatrach.dz" &&
+              password === "Sonatrach2025"
+            ) {
+              // Successful login
+              loginPage.classList.add("hidden");
+              dashboardPage.classList.remove("hidden");
+
+              // Store login state in localStorage if "Remember me" is checked
+              if (document.getElementById("remember").checked) {
+                localStorage.setItem("sonatrachLoggedIn", "true");
+              }
+            } else {
+              // Failed login
+              errorMessage.textContent =
+                "Invalid email or password. Please try again.";
+              errorMessage.classList.remove("hidden");
+              loginForm.classList.add("shake");
+
+              // Reset loading state
+              loginText.textContent = "Sign in";
+              loginSpinner.classList.add("hidden");
+
+              // Remove shake animation after it completes
+              setTimeout(() => {
+                loginForm.classList.remove("shake");
+              }, 500);
+            }
+          }, 1000);
+        });
+
+        // Check if user is already logged in (from localStorage)
+        if (localStorage.getItem("sonatrachLoggedIn") === "true") {
+          loginPage.classList.add("hidden");
+          dashboardPage.classList.remove("hidden");
+        }
+
+        // Add animation to form inputs on focus
+        const inputs = document.querySelectorAll(".input-field");
+        inputs.forEach((input) => {
+          input.addEventListener("focus", function () {
+            this.parentElement
+              .querySelector("i")
+              .classList.add("text-blue-500");
+            this.parentElement
+              .querySelector("i")
+              .classList.remove("text-gray-400");
+          });
+
+          input.addEventListener("blur", function () {
+            this.parentElement
+              .querySelector("i")
+              .classList.remove("text-blue-500");
+            this.parentElement
+              .querySelector("i")
+              .classList.add("text-gray-400");
+          });
+        });
+      });
+    </script>
+  </body>
+</html>
